@@ -1,3 +1,5 @@
+import collections
+import itertools
 import logging
 
 
@@ -239,49 +241,9 @@ class FullMetalExtractor(object):
         self._handleNamed(masterEvents, masterActions, masterElements)
 
     def _handleNamed(self, events, elements, actions):
-        self._tracking = {
-            '/OpenAction': 0,
-            '/AA': 0,
-            '/Names': 0,
-            '/AcroForm': 0,
+        self._tracking = collections.Counter()
 
-            '/JS': 0,
-            '/JavaScript': 0,
-            '/Launch': 0,
-            '/SubmitForm': 0,
-            '/ImportData': 0,
-            '/Encrypt': 0,
-
-            '/JBIG2Decode': 0,
-            '/EmbeddedFiles': 0,
-            '/Flash': 0,
-
-            '/ASCIIHexDecode': 0,
-            '/ASCII85Decode': 0,
-            '/LZWDecode': 0,
-            '/FlateDecode': 0,
-            '/RunLengthDecode': 0,
-            '/CCITTFaxDecode': 0,
-            '/DCTDecode': 0,
-            '/JPXDecode': 0,
-            '/Crypt': 0,
-        }
-
-        try:
-            for i in events:
-                self._tracking[i] = self._tracking[i] + 1
-        except:
-            pass
-        try:
-            for i in elements:
-                self._tracking[i] = self._tracking[i] + 1
-        except:
-            pass
-        try:
-            for i in actions:
-                self._tracking[i] = self._tracking[i] + 1
-        except:
-            pass
+        self._tracking.update(itertools.chain(events, elements, actions))
 
         self._openAction = self._tracking['/OpenAction']
         self._aa = self._tracking['/AA']
